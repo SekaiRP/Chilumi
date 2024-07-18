@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marriage Certificate</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Noto Naskh Arabic', serif;
+      background: linear-gradient(135deg, #f9e7e7 0%, #f5d0fe 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .certificate {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 3px solid #d4af37;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+      width: 90%;
+      max-width: 700px;
+      overflow: hidden;
+    }
+
+    .certificate::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+      animation: shimmer 10s infinite linear;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    h1 {
+      color: #d4af37;
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .names {
+      font-size: 28px;
+      font-weight: bold;
+      color: #d4af37;
+      margin: 20px 0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .heart {
+      color: #ff6b6b;
+      font-size: 40px;
+      position: absolute;
+      opacity: 0;
+    }
+
+    .signature {
+      margin-top: 30px;
+      font-style: italic;
+      color: #666;
+    }
+
+    .date {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #d4af37;
+    }
+
+    .seal {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 120px;
+      height: 120px;
+      border: 2px solid #d4af37;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #d4af37;
+      transform: rotate(-15deg);
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .photo-frame {
+      width: 200px;
+      height: 200px;
+      border: 3px solid #d4af37;
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .decoration {
+      position: absolute;
+      font-size: 24px;
+      color: rgba(212, 175, 55, 0.3);
+    }
+
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="confetti"></canvas>
+  <div class="certificate">
+    <div class="decoration" style="top: 10px; left: 10px;">❀</div>
+    <div class="decoration" style="top: 10px; right: 10px;">❀</div>
+    <h1>سند ازدواج</h1>
+    <div class="photo-frame">
+      <img src="./img.jpg" alt="عکس دو نفره عروس و داماد">
+    </div>
+    <p>به نام خداوند مهر و محبت</p>
+    <p>این سند گواهی می‌دهد که</p>
+    <div class="names">
+      <span id="groom">آقای چایلد</span>
+      <span> و </span>
+      <span id="bride">خانم لومین</span>
+    </div>
+    <p>در تاریخ زیر پیوند مقدس ازدواج خود را جشن گرفته و متعهد شدند تا در شادی و غم، سلامتی و بیماری، و در تمام لحظات زندگی کنار یکدیگر باشند.</p>
+    <div class="signature">Tartaglia - Lumine </div>
+    <div class="date" id="weddingDate"></div>
+    <div class="seal">Sekai Official Seal</div>
+    <div class="decoration" style="bottom: 10px; left: 10px;">❀</div>
+    <div class="decoration" style="bottom: 10px; right: 10px;">❀</div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script>
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('weddingDate').textContent = today.toLocaleDateString('fa-IR', options);
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '❤';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.top = Math.random() * 100 + 'vh';
+      document.body.appendChild(heart);
+
+      gsap.to(heart, {
+        y: -200,
+        x: Math.random() * 100 - 50,
+        opacity: 0,
+        duration: 4,
+        ease: "power1.out",
+        onComplete: () => heart.remove()
+      });
+    }
+
+    setInterval(createHeart, 300);
+
+    gsap.from('.certificate', {
+      scale: 0.5,
+      opacity: 0,
+      duration: 1.5,
+      ease: "elastic.out(1, 0.5)"
+    });
+    
+    gsap.from('.names span', {
+      opacity: 0,
+      y: 20,
+      stagger: 0.5,
+      duration: 1,
+      delay: 1
+    });
+    
+    gsap.from('.seal', {
+      rotation: -45,
+      scale: 0,
+      opacity: 0,
+      duration: 1.5,
+      delay: 2,
+      ease: "back.out(1.7)"
+    });
+    
+    gsap.from('.photo-frame', {
+      scale: 0,
+      opacity: 0,
+      duration: 1.5,
+      delay: 0.5,
+      ease: "back.out(1.7)"
+    });
+    
+    gsap.from('.decoration', {
+      scale: 0,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.2,
+      delay: 2.5,
+      ease: "back.out(1.7)"
+    });
+    
+    const confetti = document.getElementById('confetti');
+    const ctx = confetti.getContext('2d');
+    confetti.width = window.innerWidth;
+    confetti.height = window.innerHeight;
+
+    const confettiPieces = [];
+    const colors = ['#d4af37', '#ff6b6b', '#f9e7e7', '#f5d0fe'];
+
+    function createConfetti() {
+      for (let i = 0; i < 100; i++) {
+        confettiPieces.push({
+          x: Math.random() * confetti.width,
+          y: Math.random() * confetti.height,
+          size: Math.random() * 5 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedY: Math.random() * 1 + 0.5,
+          speedX: Math.random() * 1 - 0.5,
+          rotation: Math.random() * 360
+        });
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, confetti.width, confetti.height);
+      confettiPieces.forEach(piece => {
+        ctx.beginPath();
+        ctx.save();
+        ctx.translate(piece.x, piece.y);
+        ctx.rotate(piece.rotation * Math.PI / 180);
+        ctx.fillStyle = piece.color;
+        ctx.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size);
+        ctx.restore();
+
+        piece.y += piece.speedY;
+        piece.x += piece.speedX;
+        piece.rotation += 2;
+
+        if (piece.y > confetti.height) {
+          piece.y = -piece.size;
+          piece.x = Math.random() * confetti.width;
+        }
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+
+    createConfetti();
+    drawConfetti();
+  </script>
+</body>
+
+</html>
